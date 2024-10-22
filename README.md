@@ -1,6 +1,3 @@
-# PCP_DP
-PCP - Privacy preserving content based publish subscribe scheme with differential privacy in Fog Computing
-
 # PCP Project: Privacy-Preserving Content-Based Publish/Subscribe Scheme
 
 ## Overview
