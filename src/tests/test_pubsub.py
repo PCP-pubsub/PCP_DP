@@ -6,16 +6,30 @@ from pubsub.subscriber import Subscriber
 from matching.matcher import Matcher
 from privacy.differential_privacy import DifferentialPrivacy
 from privacy.u_apriori import UApriori
+import sys
+import os
+
+# Append the src directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
 class TestPubSub(unittest.TestCase):
+
     def test_event_flow(self):
         broker = Broker()
         publisher = Publisher(broker, user_id=1)
         subscriber = Subscriber(broker, user_id=2, interest="topic1")
+        
+        # Publishing and subscribing with 'top_k_itemsets'
+        publisher_event = {'event': 'topic1', 'top_k_itemsets': ['item1', 'item2']}
+        subscriber_event = {'interest': 'topic1', 'top_k_itemsets': ['item2', 'item3']}
 
-        publisher.publish_event("topic1")
-        matched = broker.match_event({'event': 'topic1'}, {'interest': 'topic1'})
+        matched = broker.match_event(publisher_event, subscriber_event)
         self.assertTrue(matched)
+
+        # Test a non-matching case
+        non_matching_subscriber = {'interest': 'topic2', 'top_k_itemsets': ['item4', 'item5']}
+        non_matched = broker.match_event(publisher_event, non_matching_subscriber)
+        self.assertFalse(non_matched)
 
     def test_match(self):
         matcher = Matcher()
